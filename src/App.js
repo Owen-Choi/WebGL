@@ -1,16 +1,19 @@
-import React, { Suspense } from "react";
-import { Canvas } from "react-three-fiber";
+import React, { Suspense, useEffect, useState} from "react";
+import {Canvas, useFrame} from "react-three-fiber";
 import { DoubleSide, RepeatWrapping, sRGBEncoding } from "three";
 import {
   Loader,
   OrbitControls,
   useTexture,
-  PerspectiveCamera
 } from "@react-three/drei";
-
+import { PerspectiveCamera, PositionalAudio} from '@react-three/drei'
 import { vertexShader, fragmentShader } from "./shaders";
 
 import "./style.css";
+
+const [xAxis, setXAxis] = useState(0.5);
+const [yAxis, setYAxis] = useState(0.5);
+const [zAxis, setZAxis] = useState(0.5);
 
 export default function App() {
   return (
@@ -23,12 +26,14 @@ export default function App() {
           <ambientLight />
         </Suspense>
         <PerspectiveCamera
-          position={[0.5, 0.5, 0.5]}
+          position={[xAxis, yAxis, zAxis]}
           near={0.01}
           far={1000}
           makeDefault
         />
-        <OrbitControls screenSpacePanning={false} />
+        <OrbitControls
+            screenSpacePanning={false}
+        />
       </Canvas>
       <Loader />
     </div>
@@ -54,7 +59,7 @@ function Terrain() {
 
   return (
     <mesh
-      position={[0, 0, 0]}
+      position={[-0.1, 0.3, 0]}
       rotation={[-Math.PI / 2, 0, 0]}
       scale={[1 / 1024, 1 / 1024, 1 / 1024]}
     >
