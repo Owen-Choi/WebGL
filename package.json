@@ -6,6 +6,7 @@
   "main": "src/index.js",
   "dependencies": {
     "@react-three/drei": "2.2.7",
+    "@react-three/fiber": "^8.8.10",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-scripts": "3.4.3",
