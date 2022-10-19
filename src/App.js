@@ -8,7 +8,20 @@ import {
   useTexture,
 } from "@react-three/drei";
 import { vertexShader, fragmentShader } from "./shaders";
+import * as MathUtils from "three/src/math/MathUtils"
 import "./style.css";
+
+const keys = {
+  ArrowUp: 'forward',
+  ArrowDown: 'backward',
+  ArrowLeft: 'left',
+  ArrowRight: 'right',
+  KeyA: 'left',
+  KeyD: 'right',
+  KeyW: 'up',
+  KeyS: 'down'
+}
+const moveFieldByKey = (key) => keys[key]
 
 export default function App() {
   return (
@@ -20,27 +33,49 @@ export default function App() {
           </group>
           <ambientLight />
         </Suspense>
-        <PerspectiveCamera
-            position={[0.5, 0.5, 0.5]}
-            near={0.01}
-            far={1000}
-            makeDefault
-        />
+        {/*<PerspectiveCamera*/}
+        {/*    position={[0.5, 0.5, 0.5]}*/}
+        {/*    near={0.01}*/}
+        {/*    far={1000}*/}
+        {/*    makeDefault*/}
+        {/*/>*/}
+        <Cam />
         <OrbitControls
             screenSpacePanning={true}
             enableKeys={true}
             makeDefault enabled={false}
-            // keys={[
-            //   LEFT : 89, //left arrow
-            //   UP: 'ArrowUp', // up arrow
-            //   RIGHT: 'ArrowRight', // right arrow
-            //   BOTTOM: 'ArrowDown'
-            // ]}
         />
       </Canvas>
       <Loader />
     </div>
   );
+}
+
+const Cam = () => {
+  const camRef = useRef()
+  // const [movement, setMovement] = useState({ forward: false, backward: false, left: false, right: false, up: false, down: false })
+
+  useFrame((state, delta) => {
+    camRef.current.position.y = MathUtils.MathUtils.lerp(camRef.current.position.y, state.mouse.y * 0.5 + 0.5, Math.min(delta, 0.1))
+    camRef.current.position.x = MathUtils.MathUtils.lerp(camRef.current.position.x, state.mouse.x, Math.min(delta, 0.1))
+    camRef.current.lookAt(0, 0, 0)
+  })
+  //
+  // useEffect(() => {
+  //   const handleKeyDown = (e) => setMovement((m) => ({ ...m, [moveFieldByKey(e.code)]: true }))
+  //   const handleKeyUp = (e) => setMovement((m) => ({ ...m, [moveFieldByKey(e.code)]: false }))
+  //   document.addEventListener('keydown', handleKeyDown)
+  //   document.addEventListener('keyup', handleKeyUp)
+  //   document.addEventListener('pointermove', handleMouseMove)
+  //
+  //   return () => {
+  //     document.removeEventListener('keydown', handleKeyDown)
+  //     document.removeEventListener('keyup', handleKeyUp)
+  //     document.removeEventListener('pointermove', handleMouseMove)
+  //   }
+  // }, [])
+
+  return <PerspectiveCamera ref={camRef} makeDefault position={[0.5, 0.5, 0.5]} fov={75} />
 }
 
 const Terrain = () => {
